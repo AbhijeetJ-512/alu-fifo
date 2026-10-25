@@ -1,0 +1,80 @@
+# Mutation run: each row is one deliberate RTL bug run through the full testbench.
+# fired     = checks that fired (assertion labels; 'scoreboard' = the testbench's own checks)
+# intended  = the check(s) the bug is bound to; 'ok' when all of them fired
+# neutralised = same bug with the intended assertion(s) removed at compile time
+# run args  : +seed=1 +ncmd=20000 +verilator+seed+2 +verilator+rand+reset+2
+# flags     : --cc --exe --build --timing --assert --x-initial unique --top-module tb_alu_fifo -GDEPTH=8 -Wno-DECLFILENAME -Wno-UNUSEDSIGNAL -Wno-UNUSEDPARAM
+
+M01  KILLED  intended ok
+    bug        : FIFO full asserts one entry early (occupancy >= DEPTH-1)
+    intended   : a_full_def
+    fired      : {a_conservation, a_full_def, scoreboard}
+    neutralised: caught by {a_conservation, scoreboard}
+M02  KILLED  intended ok
+    bug        : pop allowed while empty (FIFO guard removed and the sink pops without out_valid)
+    intended   : a_empty_def
+    fired      : {a_conservation, a_empty_def, a_flag_n, a_flag_z, a_full_def, a_latency, a_out_hold, scoreboard}
+    neutralised: caught by {a_conservation, a_flag_n, a_flag_z, a_full_def, a_latency, a_out_hold, scoreboard}
+M03  KILLED  intended ok
+    bug        : push allowed while full (FIFO guard removed and in_ready tied high), overwriting the oldest entry
+    intended   : a_full_def
+    fired      : {a_conservation, a_empty_def, a_full_def, a_head_stable, scoreboard}
+    neutralised: caught by {a_conservation, a_empty_def, a_head_stable, scoreboard}
+M04  KILLED  intended ok
+    bug        : full never asserts (as with pointers that lack the wrap bit)
+    intended   : a_full_def
+    fired      : {a_conservation, a_empty_def, a_full_def, a_head_stable, a_latency, a_out_hold}
+    neutralised: caught by {a_conservation, a_empty_def, a_head_stable, a_latency, a_out_hold, scoreboard}
+M05  KILLED  intended ok
+    bug        : reset leaves rd_ptr untouched
+    intended   : a_reset_empty
+    fired      : {a_conservation, a_empty_def, a_flag_n, a_flag_z, a_reset_empty, scoreboard}
+    neutralised: caught by {a_conservation, a_empty_def, a_flag_n, a_flag_z, scoreboard}
+M06  KILLED  intended ok
+    bug        : SUB carry-out inverted (C reports borrow instead of no-borrow)
+    intended   : scoreboard
+    fired      : {scoreboard}
+    neutralised: n/a (intended is the scoreboard)
+M07  KILLED  intended ok
+    bug        : V flag set for AND when the operand signs differ
+    intended   : scoreboard
+    fired      : {scoreboard}
+    neutralised: n/a (intended is the scoreboard)
+M08  KILLED  intended ok
+    bug        : SRL shifts arithmetically (sign-extends) instead of logically
+    intended   : scoreboard
+    fired      : {scoreboard}
+    neutralised: n/a (intended is the scoreboard)
+M09  KILLED  intended ok
+    bug        : SLTU compares as signed
+    intended   : scoreboard
+    fired      : {scoreboard}
+    neutralised: n/a (intended is the scoreboard)
+M10  KILLED  intended ok
+    bug        : N flag taken from bit W-2 instead of the sign bit
+    intended   : a_flag_n
+    fired      : {a_flag_n, scoreboard}
+    neutralised: caught by {scoreboard}
+M11  KILLED  intended ok
+    bug        : transfer ignores out_full (pushes a result into a full output FIFO)
+    intended   : a_lockstep
+    fired      : {a_conservation, a_lockstep, scoreboard}
+    neutralised: caught by {a_conservation, scoreboard}
+M12  KILLED  intended ok
+    bug        : transfer fires while the input FIFO is empty (pushes a garbage result)
+    intended   : a_lockstep
+    fired      : {a_conservation, a_lockstep, scoreboard}
+    neutralised: caught by {a_conservation, scoreboard}
+M13  KILLED  intended ok
+    bug        : FIFO head read from the write slot, so the output changes while stalled
+    intended   : a_out_hold
+    fired      : {a_flag_n, a_flag_z, a_head_stable, a_out_hold, scoreboard}
+    neutralised: caught by {a_flag_n, a_flag_z, a_head_stable, scoreboard}
+M14  KILLED  intended ok
+    bug        : result push suppressed when the output FIFO holds DEPTH-1 entries while the input still pops
+    intended   : a_conservation, a_lockstep
+    fired      : {a_conservation, a_lockstep, scoreboard}
+    neutralised: caught by {scoreboard}
+
+mutants: 14, killed 14, intended check fired in 14
+only guard for their bug (survive with the intended check removed): none

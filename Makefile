@@ -73,6 +73,10 @@ help:
 	@echo "  make pnr            - OpenROAD floorplan, place, CTS, repair, route, extract -> $(RESULTS_DIR)/ (PNR_STOP_AFTER=repair to stop early)"
 	@echo "  make pnr-selftest   - pnr_check.sh must reject a run that stopped early, a stale or mismatched results directory"
 	@echo "  make pnr-check      - read the OpenROAD run back and fail on anything wrong (PNR_CHECK_MODE=partial|full)"
+	@echo "  make all            - synth + sta + pnr (as in Full-Adder)"
+	@echo "  make summary        - key figures read from the reports; NOT YET MEASURED where a report is missing"
+	@echo "  make summary-selftest - summary.sh parsing and its NOT YET MEASURED fallback, on synthetic reports"
+	@echo "  make view           - open the routed design in the OpenROAD GUI (needs a display)"
 	@echo "  make sta-selftest   - check_sdc.py must reject a wrong period, delay, driving cell or load in the SDC readback"
 	@echo "  make check          - lint, rules, sim, seeds, depths, cov, mutants and their self-tests"
 	@echo "  make mutants        - inject each verif/mutants/*.mut bug; every one must be caught by its intended check"
@@ -282,6 +286,22 @@ pnr-check:
 .PHONY: pnr-selftest
 pnr-selftest:
 	@scripts/pnr_check_selftest.sh
+
+.PHONY: summary
+summary:
+	@scripts/summary.sh
+
+.PHONY: summary-selftest
+summary-selftest:
+	@scripts/summary_selftest.sh
+
+.PHONY: all
+all: synth sta pnr
+
+.PHONY: view
+view:
+	@echo "[OPENROAD][GUI] Viewing final routed design..."
+	@$(OPENROAD) -gui scripts/view_design.tcl
 
 # --------------- Cleaning ---------------
 

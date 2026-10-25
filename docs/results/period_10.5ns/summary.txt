@@ -1,0 +1,19 @@
+=== SUMMARY (every line is read from a report file) ===
+[synthesis]  build/reports/stat.txt
+  cells                              Number of cells:               1625
+  area (um^2, no placement)          Chip area for module '\alu_fifo_top': 19947.881600
+[static timing, post-synthesis, ideal clock, no wires]  build/reports/timing.txt
+  clock period (ns)                  clock period (from the loaded design): 10.500000 ns
+  worst setup slack (ns)             worst slack max -2.036
+  worst hold slack (ns)              worst slack min 0.427
+  total negative slack (ns)          tns max -100.351
+[place and route, routed + extracted (SPEF), propagated clock]  pnr_results/
+  worst setup slack (ns)             worst slack max -0.379
+  worst hold slack (ns)              worst slack min 0.493
+  total negative slack (ns)          tns max -2.829
+  clock skew                          -0.064 setup skew
+  design area                        Design area 20784 u^2 42.3% utilization (standard cells and tapcells, before filler cells)
+  total power (W, default activity)  Total                  3.94e-03   3.47e-03   8.70e-09   7.41e-03 100.0%
+  route DRC violations               drc_violations=0
+  antenna violations                 antenna_violations=0
+===

@@ -1,0 +1,74 @@
+ok latch.sv -> no-latch
+ok tribuf.sv -> no-tribuf
+ok undriven.sv -> check-rtl
+ok multidrive.sv -> check-rtl
+ok net_good.v -> pass
+ok net_generic.v -> all-mapped
+ok net_lpflow.v -> no-lpflow
+ok net_multidrive.v -> check-assert
+ok good_readback.sdc (period 10.0) -> exit 0 (-)
+ok good_readback.sdc (period 8.0) -> exit 1 (clock period)
+ok bad_period.sdc (period 10.0) -> exit 1 (clock period)
+ok bad_delay.sdc (period 10.0) -> exit 1 (set_input_delay.*a\[0\])
+ok missing_input_delay.sdc (period 10.0) -> exit 1 (set_input_delay.*a\[1\])
+ok missing_output_delay.sdc (period 10.0) -> exit 1 (set_output_delay.*y)
+ok bad_load.sdc (period 10.0) -> exit 1 (set_load.*y)
+ok bad_driver.sdc (period 10.0) -> exit 1 (set_driving_cell)
+ok clock_delay.sdc (period 10.0) -> exit 1 (clk)
+ok no_such_file.sdc (period 10.0) -> exit 2 (cannot read)
+ok   prints 'Number of cells:  *1111'
+ok   prints 'Chip area.* 2222.5'
+ok   prints 'period.*7.5 ns'
+ok   prints 'worst slack max -1.111'
+ok   prints 'worst slack max 0.444'
+ok   prints 'tns max -3.333'
+ok   prints 'max slew 3, max capacitance 1, max fanout 0'
+ok   prints 'max slew 1, max capacitance 0, max fanout 0'
+ok   prints 'clock_period_ns=7.500000'
+ok   prints 'repair_setup_margin=0.3'
+ok   prints 'skew 0.123'
+ok   prints 'Design area 4444'
+ok   prints 'Total .*9.99e-03'
+ok   prints 'drc_violations=7'
+ok   prints 'antenna_violations=2'
+ok   no NOT YET MEASURED when every report exists
+ok   an empty violations report means zero violations, not NOT YET MEASURED
+ok   a missing violations report is NOT YET MEASURED
+ok   a missing power report gives NOT YET MEASURED on the power line only
+ok   with no build reports every build-report line says NOT YET MEASURED (7 lines)
+ok   complete run, full -> exit 0 (-)
+ok   complete run, partial -> exit 0 (-)
+ok   run that stopped early, full -> exit 1 (did not finish)
+ok   stopped-early run is fine as partial -> exit 0 (-)
+ok   run that never reached repair -> exit 1 (never reached)
+ok   [ERROR line in the log -> exit 1 (\[ERROR)
+ok   OpenROAD period differs from STA's -> exit 1 (different clock periods)
+ok   netlist built for another period -> exit 1 (netlist was built for)
+ok   no run_conditions.txt (stale or foreign results) -> exit 1 (run_conditions.txt)
+ok   CTS sinks != flip-flops -> exit 1 (clock sinks)
+ok   slew violations are reported by summary, not a check failure -> exit 0 (-)
+ok   missing check_types_final.rpt -> exit 1 (check_types_final.rpt missing)
+ok   missing timing_final.rpt -> exit 1 (timing_final.rpt missing)
+ok   DRC report disagrees with the count -> exit 1 (disagrees)
+ok   malformed DRC count -> exit 1 (drc_count.txt is not)
+ok   empty results directory -> exit 1 (missing or empty)
+ok latch.sv -> no-latch
+ok tribuf.sv -> no-tribuf
+ok undriven.sv -> check-rtl
+ok multidrive.sv -> check-rtl
+ok net_good.v -> pass
+ok net_generic.v -> all-mapped
+ok net_lpflow.v -> no-lpflow
+ok net_multidrive.v -> check-assert
+ok   delete check-rtl -> only undriven.sv multidrive.sv went wrong
+ok   neutralise check-rtl -> only undriven.sv multidrive.sv went wrong
+ok   delete no-latch -> only latch.sv went wrong
+ok   neutralise no-latch -> only latch.sv went wrong
+ok   delete no-tribuf -> only tribuf.sv went wrong
+ok   neutralise no-tribuf -> only tribuf.sv went wrong
+ok   delete check-assert -> only net_multidrive.v went wrong
+ok   neutralise check-assert -> only net_multidrive.v went wrong
+ok   delete all-mapped -> only net_generic.v went wrong
+ok   neutralise all-mapped -> only net_generic.v went wrong
+ok   delete no-lpflow -> only net_lpflow.v went wrong
+ok   neutralise no-lpflow -> only net_lpflow.v went wrong

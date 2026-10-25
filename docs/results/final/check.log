@@ -1,0 +1,69 @@
+[LINT] verilator --lint-only -Wall rtl/
+[LINT] clean
+rules: clean
+ok bad_initial -> R-INITIAL
+ok bad_always -> R-ALWAYS
+ok bad_display -> R-DISPLAY
+ok bad_sva -> R-SVA
+ok bad_tristate -> R-TRISTATE
+ok rtl/ passes every rule
+[SIM ] Building testbench (DEPTH=8)...
+[SIM ] Running (SEED=1 DEPTH=8)...
+TB PASS seed=1 cmds=20652
+TB STATS distinct_cmds=19375
+- verif/tb_alu_fifo.sv:403: Verilog $finish
+[SEEDS] seed 0 ok (distinct_cmds=19418)
+[SEEDS] seed 2654435769 ok (distinct_cmds=19402)
+[SEEDS] SEED=1 reproduces byte-identically
+[DEPTHS] DEPTH=2: TB PASS seed=1 cmds=20568
+[DEPTHS] DEPTH=4: TB PASS seed=1 cmds=20596
+[DEPTHS] DEPTH=16: TB PASS seed=1 cmds=20764
+[COV ] Building coverage testbench (DEPTH=8)...
+[COV ] Running (SEED=1 DEPTH=8)...
+cov_check: ok (34 bins hit, 10 line blocks, 0 excluded)
+cov_check: note - the line gate cannot see alu_fifo_top.sv, alu_pkg.sv (no line records: no procedural blocks)
+[COV ] reports: build/reports/coverage_bins.txt coverage_summary.txt coverage_toggle_unhit.txt cov_annotated/
+ok all_hit -> exit 0 (alu_fifo_top.sv)
+ok zero_hit_bin -> exit 1 (c_v_sub)
+ok uncovered_line -> exit 1 (rtl/alu.sv:41)
+ok excluded_line_passes -> exit 0 (-)
+ok stale_exclusion -> exit 1 (STALE EXCLUSION)
+ok no_bins_is_error -> exit 2 (no cover bins)
+ok missing_file -> exit 2 (cannot read)
+ok   fired_set: two assertions and the scoreboard
+ok   fired_set: a clean run fires nothing
+ok   fired_set: a TB FAIL line counts as the scoreboard
+ok   fired_set: the TB's own fail task is not an assertion label
+ok   parse_mut: id, intended list and two edits
+ok   apply_edits: both edits applied, \n becomes a newline
+ok   apply_edits: a find that matches twice aborts naming the mutant
+ok   apply_edits: a find that matches nowhere aborts naming the mutant
+ok   assertion_labels: assertions only, not covers or comments
+ok   unbound_assertions: labels no mutant lists as intended
+ok   never_fired: labels that fired in no mutant run
+ok   apply_edits: a verif/ file is edited in the copy only
+mutants selftest: ok
+  M01: killed=True fired={a_conservation, a_full_def, scoreboard}
+  M02: killed=True fired={a_conservation, a_empty_def, a_flag_n, a_flag_z, a_full_def, a_latency, a_out_hold, scoreboard}
+  M04: killed=True fired={a_conservation, a_empty_def, a_full_def, a_head_stable, a_latency, a_out_hold}
+  M03: killed=True fired={a_conservation, a_empty_def, a_full_def, a_head_stable, a_ready_def, scoreboard}
+  M06: killed=True fired={scoreboard}
+  M08: killed=True fired={scoreboard}
+  M07: killed=True fired={scoreboard}
+  M05: killed=True fired={a_conservation, a_empty_def, a_flag_n, a_flag_z, a_reset_empty, scoreboard}
+  M09: killed=True fired={scoreboard}
+  M10: killed=True fired={a_flag_n, scoreboard}
+  M11: killed=True fired={a_conservation, a_lockstep, a_xfer_def, scoreboard}
+  M12: killed=True fired={a_conservation, a_lockstep, a_xfer_def, scoreboard}
+  M13: killed=True fired={a_flag_n, a_flag_z, a_head_stable, a_out_hold, scoreboard}
+  M14: killed=True fired={a_conservation, a_lockstep, scoreboard}
+  M15: killed=True fired={a_ready_def}
+  M17: killed=True fired={a_ready_def}
+  M16: killed=True fired={a_latency, a_xfer_def}
+  M18: killed=True fired={a_conservation, a_empty_def, a_latency, a_not_full_and_empty, a_out_hold, scoreboard}
+  M19: killed=True fired={a_flag_z, scoreboard}
+  M20: killed=True fired={a_latency, a_valid_def}
+  M21: killed=True fired={a_in_hold, scoreboard}
+  M22: killed=True fired={a_latency, a_valid_def}
+mutants: 22 run, 22 killed, report build/reports/mutants.txt
+[CHECK] all gates passed

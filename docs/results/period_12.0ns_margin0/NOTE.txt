@@ -1,0 +1,3 @@
+Made in a scratch copy of the project with:  PNR_SET="repair_setup_margin 0" make sta pnr CLK_PERIOD_NS=12.0
+(the flow default for repair_setup_margin is now 0.3; pnr.log in this directory has the "PNR_SET override" line that proves margin 0).
+build/synth.v from this run is byte-identical to the 10.0 ns one (cmp), and stat.txt is identical: abc -D has no effect in this range.

@@ -1,0 +1,30 @@
+ok   no [ERROR lines in pnr_results/pnr.log
+ok   alu_fifo_sky130hd_global_place-tcl.db written
+ok   alu_fifo_sky130hd_cts-tcl.db written
+ok   alu_fifo_sky130hd_repair-tcl.db written
+ok   clock tree has 454 sinks = 454 flip-flops in stat.txt
+ok   log has 'worst slack max'
+ok   log has 'worst slack min'
+ok   log has 'tns max'
+ok   check_types_postcts.rpt written
+ok   check_types_postrepair.rpt written
+ok   alu_fifo_sky130hd_route-tcl.def written
+ok   alu_fifo_sky130hd_route-tcl.db written
+ok   alu_fifo_sky130hd_fill-tcl.db written
+ok   alu_fifo_sky130hd_final-tcl.def written
+ok   alu_fifo_sky130hd-tcl.spef written
+ok   timing_final.rpt written
+ok   check_types_final.rpt written
+ok   clock_skew.rpt written
+ok   power_final.rpt written
+ok   area_final.rpt written
+ok   antenna.rpt written
+ok   drc_count.txt written
+ok   drc_violations=0 (route DRC; a non-zero count is reported, not hidden)
+ok   route DRC report is empty, consistent with drc_violations=0
+ok   antenna_violations=0
+ok   timing_final.rpt has 'slack'
+ok   timing_final.rpt has 'worst slack max'
+ok   timing_final.rpt has 'worst slack min'
+ok   timing_final.rpt has 'tns max'
+ok   no unrouted nets

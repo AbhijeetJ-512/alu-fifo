@@ -1,0 +1,4 @@
+check exit=0 wall_seconds=208
+all exit=0 wall_seconds=74
+pnr-check exit=0 wall_seconds=0
+selftests exit=0 wall_seconds=24

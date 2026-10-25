@@ -1,0 +1,5 @@
+source               : build/cov_d8/coverage.dat
+named cover bins     : 34 total, 34 hit, 0 zero
+rtl/ line blocks    : 10 total, 10 covered, 0 excluded, 0 uncovered
+rtl/ branches       : 12 total, 12 hit (reported, not gated)
+rtl/ toggle bits    : 626 total, 626 toggled, 0 unhit (reported, not gated)

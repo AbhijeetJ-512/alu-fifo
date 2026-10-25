@@ -1,0 +1,13 @@
+# Post-synthesis static timing, ideal clock, no wire parasitics (pre-layout). Library: sky130_fd_sc_hd__tt_025C_1v80. SDC: constraints/alu_fifo.sdc
+# switching activity: OpenSTA defaults (no VCD/SAIF supplied), so this is not a measured workload
+Group                  Internal  Switching    Leakage      Total
+                          Power      Power      Power      Power (Watts)
+----------------------------------------------------------------
+Sequential             2.18e-03   2.76e-04   3.74e-09   2.45e-03  48.1%
+Combinational          1.44e-03   1.20e-03   4.56e-09   2.64e-03  51.9%
+Clock                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+----------------------------------------------------------------
+Total                  3.62e-03   1.48e-03   8.30e-09   5.10e-03 100.0%
+                          71.0%      29.0%       0.0%

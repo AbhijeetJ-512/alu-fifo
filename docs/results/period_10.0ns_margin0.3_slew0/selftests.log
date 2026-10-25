@@ -1,0 +1,52 @@
+ok latch.sv -> no-latch
+ok tribuf.sv -> no-tribuf
+ok undriven.sv -> check-rtl
+ok multidrive.sv -> check-rtl
+ok net_good.v -> pass
+ok net_generic.v -> all-mapped
+ok net_lpflow.v -> no-lpflow
+ok net_multidrive.v -> check-assert
+ok good_readback.sdc (period 10.0) -> exit 0 (-)
+ok good_readback.sdc (period 8.0) -> exit 1 (clock period)
+ok bad_period.sdc (period 10.0) -> exit 1 (clock period)
+ok bad_delay.sdc (period 10.0) -> exit 1 (set_input_delay.*a\[0\])
+ok missing_input_delay.sdc (period 10.0) -> exit 1 (set_input_delay.*a\[1\])
+ok missing_output_delay.sdc (period 10.0) -> exit 1 (set_output_delay.*y)
+ok bad_load.sdc (period 10.0) -> exit 1 (set_load.*y)
+ok bad_driver.sdc (period 10.0) -> exit 1 (set_driving_cell)
+ok clock_delay.sdc (period 10.0) -> exit 1 (clk)
+ok no_such_file.sdc (period 10.0) -> exit 2 (cannot read)
+ok   prints 'Number of cells:  *1111'
+ok   prints 'Chip area.* 2222.5'
+ok   prints 'period.*7.5 ns'
+ok   prints 'worst slack max -1.111'
+ok   prints 'worst slack max 0.444'
+ok   prints 'tns max -3.333'
+ok   prints 'skew 0.123'
+ok   prints 'Design area 4444'
+ok   prints 'Total .*9.99e-03'
+ok   prints 'drc_violations=7'
+ok   prints 'antenna_violations=2'
+ok   no NOT YET MEASURED when every report exists
+ok   a missing power report gives NOT YET MEASURED on the power line only
+ok   with no build reports every build-report line says NOT YET MEASURED (7 lines)
+ok latch.sv -> no-latch
+ok tribuf.sv -> no-tribuf
+ok undriven.sv -> check-rtl
+ok multidrive.sv -> check-rtl
+ok net_good.v -> pass
+ok net_generic.v -> all-mapped
+ok net_lpflow.v -> no-lpflow
+ok net_multidrive.v -> check-assert
+ok   delete check-rtl -> only undriven.sv multidrive.sv went wrong
+ok   neutralise check-rtl -> only undriven.sv multidrive.sv went wrong
+ok   delete no-latch -> only latch.sv went wrong
+ok   neutralise no-latch -> only latch.sv went wrong
+ok   delete no-tribuf -> only tribuf.sv went wrong
+ok   neutralise no-tribuf -> only tribuf.sv went wrong
+ok   delete check-assert -> only net_multidrive.v went wrong
+ok   neutralise check-assert -> only net_multidrive.v went wrong
+ok   delete all-mapped -> only net_generic.v went wrong
+ok   neutralise all-mapped -> only net_generic.v went wrong
+ok   delete no-lpflow -> only net_lpflow.v went wrong
+ok   neutralise no-lpflow -> only net_lpflow.v went wrong

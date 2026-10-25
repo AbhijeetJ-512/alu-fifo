@@ -1,0 +1,7 @@
+label            : period_11.0ns
+CLK_PERIOD_NS    : 11.0
+CORE_UTILIZATION : 40 (Makefile default)
+verilator        : Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+yosys            : Yosys 0.33 (git sha1 2584903a060)
+openroad         : v2.0-25346-gc62be3f952 
+rtl sha256       : 31b57e264b286735 (cat rtl/*.sv)
