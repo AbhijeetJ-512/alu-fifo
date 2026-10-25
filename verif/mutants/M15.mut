@@ -1,0 +1,7 @@
+# Found by the final review: nothing checked in_ready against the input FIFO's full flag.
+id: M15
+desc: in_ready drops when the input FIFO is empty and the output FIFO is full (source stalled for no reason)
+intended: a_ready_def
+edit: rtl/alu_fifo_top.sv
+  find: assign in_ready    = !in_full;
+  replace: assign in_ready    = !in_full && !(in_empty && out_full);

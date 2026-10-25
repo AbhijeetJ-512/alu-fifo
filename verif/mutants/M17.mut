@@ -1,0 +1,7 @@
+# Found by the final review: the source runs at half rate and every gate still passes.
+id: M17
+desc: in_ready drops for one cycle after every accepted command (half-rate source)
+intended: a_ready_def
+edit: rtl/alu_fifo_top.sv
+  find: assign in_ready    = !in_full;
+  replace: logic acc_d;\n  always_ff @(posedge clk) acc_d <= in_valid && in_ready;\n  assign in_ready    = !in_full && !acc_d;

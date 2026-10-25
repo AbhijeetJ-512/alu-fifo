@@ -1,0 +1,7 @@
+# The effect of a pointer with no wrap bit: full and empty cannot be told apart, so full never asserts.
+id: M04
+desc: full never asserts (as with pointers that lack the wrap bit)
+intended: a_full_def
+edit: rtl/sync_fifo.sv
+  find: assign full  = (wr_ptr[AW-1:0] == rd_ptr[AW-1:0]) && (wr_ptr[AW] != rd_ptr[AW]);
+  replace: assign full  = 1'b0;

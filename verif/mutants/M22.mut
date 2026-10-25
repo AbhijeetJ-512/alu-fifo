@@ -1,0 +1,7 @@
+# Symmetric to M17 on the sink side (same class of gap as found by the final review).
+id: M22
+desc: out_valid drops for one cycle after every result taken (half-rate sink)
+intended: a_valid_def
+edit: rtl/alu_fifo_top.sv
+  find: assign out_valid = !out_empty;
+  replace: logic pop_d;\n  always_ff @(posedge clk) pop_d <= out_valid && out_ready;\n  assign out_valid = !out_empty && !pop_d;

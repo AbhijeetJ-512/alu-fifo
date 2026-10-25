@@ -67,6 +67,7 @@ help:
 	@echo "  make cov            - coverage run: every named cover bin hit, rtl/ lines covered (reports in $(REPORT_DIR)/)"
 	@echo "  make cov-selftest   - cov_check.py must fail on a zero-hit bin, an uncovered line, a stale exclusion"
 	@echo "  make check          - lint, rules, sim, seeds, depths, cov, mutants and their self-tests"
+	@echo "  make mutants        - inject each verif/mutants/*.mut bug; every one must be caught by its intended check"
 	@echo "  make wave           - open the VCD in GTKWave"
 	@echo "  make clean          - remove build/"
 	@echo "  make distclean      - remove build/ and $(RESULTS_DIR)/"
@@ -164,10 +165,26 @@ cov: $(COV_EXE)
 cov-selftest:
 	@scripts/cov_selftest.sh
 
+# --------------- Mutation run: do the checks catch real bugs? ---------------
+# Each verif/mutants/*.mut is one deliberate RTL bug (applied to a copy of rtl/). scripts/mutants.py
+# builds and runs each with the checkers, reports which checks fired, and re-runs it with the intended
+# assertion removed to show whether another check still catches it. Slow: two Verilator builds per mutant.
+MUTANT_JOBS ?= $(shell echo $$(( ($$(nproc) + 1) / 2 )))
+
+.PHONY: mutants-selftest
+mutants-selftest:
+	@$(PYTHON) -I scripts/mutants.py --selftest
+
+.PHONY: mutants
+mutants: mutants-selftest
+	@mkdir -p $(REPORT_DIR)
+	@$(PYTHON) -I scripts/mutants.py --vflags "$(VFLAGS)" --rtl $(RTL) --verif $(VERIF) --main-cpp $(MAIN_CPP) \
+	    --sim-args "$(SIM_ARGS)" --jobs $(MUTANT_JOBS) --report $(REPORT_DIR)/mutants.txt $(if $(MUTANT_ONLY),--only $(MUTANT_ONLY))
+
 # Everything that can fail, in one command: the RTL gates, the simulations, the coverage gate and the
 # mutation run, plus the self-tests that prove those gates can fail. Exits non-zero on the first failure.
 .PHONY: check
-check: lint rules rules-selftest sim sim-seeds sim-depths cov cov-selftest
+check: lint rules rules-selftest sim sim-seeds sim-depths cov cov-selftest mutants
 	@echo "[CHECK] all gates passed"
 
 # --------------- Cleaning ---------------

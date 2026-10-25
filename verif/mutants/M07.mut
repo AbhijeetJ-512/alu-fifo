@@ -1,0 +1,6 @@
+id: M07
+desc: V flag set for AND when the operand signs differ
+intended: scoreboard
+edit: rtl/alu.sv
+  find: alu_pkg::OP_AND:  y = a & b;
+  replace: alu_pkg::OP_AND:  begin y = a & b; v = a[W-1] ^ b[W-1]; end

@@ -1,0 +1,6 @@
+id: M12
+desc: transfer fires while the input FIFO is empty (pushes a garbage result)
+intended: a_lockstep
+edit: rtl/alu_fifo_top.sv
+  find: assign xfer     = !in_empty && !out_full;
+  replace: assign xfer     = !out_full;

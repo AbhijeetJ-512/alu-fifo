@@ -1,0 +1,6 @@
+id: M05
+desc: reset leaves rd_ptr untouched
+intended: a_reset_empty
+edit: rtl/sync_fifo.sv
+  find: rd_ptr <= '0;
+  replace: rd_ptr <= rd_ptr;

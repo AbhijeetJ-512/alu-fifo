@@ -1,0 +1,11 @@
+# Push while full (overwrite). Unreachable through the top as built (in_ready = !in_full), so BOTH
+# guards are removed: the FIFO's own, and in_ready (the source can now push into a full FIFO).
+id: M03
+desc: push allowed while full (FIFO guard removed and in_ready tied high), overwriting the oldest entry
+intended: a_full_def
+edit: rtl/sync_fifo.sv
+  find: if (push && !full) begin
+  replace: if (push) begin
+edit: rtl/alu_fifo_top.sv
+  find: assign in_ready    = !in_full;
+  replace: assign in_ready    = 1'b1;

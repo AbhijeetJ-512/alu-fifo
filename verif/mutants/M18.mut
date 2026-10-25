@@ -1,0 +1,6 @@
+id: M18
+desc: FIFO empty ignores the pointer wrap bit, so a full FIFO also reports empty
+intended: a_not_full_and_empty
+edit: rtl/sync_fifo.sv
+  find: assign empty = (wr_ptr == rd_ptr);
+  replace: assign empty = (wr_ptr[AW-1:0] == rd_ptr[AW-1:0]);

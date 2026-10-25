@@ -1,0 +1,7 @@
+# A testbench mutant: the source protocol rule is about the environment, so it is broken from the testbench.
+id: M21
+desc: testbench changes the command while in_valid is held against a full FIFO (violates the source protocol)
+intended: a_in_hold
+edit: verif/tb_alu_fifo.sv
+  find: // protocol: valid and the command stay unchanged until in_ready is seen
+  replace: in_a = ~in_a;

@@ -1,0 +1,7 @@
+# A functionally correct but late result: only a_latency (and a_valid_def) can see it; the scoreboard is silent.
+id: M20
+desc: one-cycle bubble before a pushed result becomes visible (out_valid delayed a cycle)
+intended: a_latency
+edit: rtl/alu_fifo_top.sv
+  find: assign out_valid = !out_empty;
+  replace: logic ov_d;\n  always_ff @(posedge clk) ov_d <= !out_empty;\n  assign out_valid = !out_empty && ov_d;

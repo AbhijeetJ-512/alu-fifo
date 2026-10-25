@@ -1,0 +1,6 @@
+id: M10
+desc: N flag taken from bit W-2 instead of the sign bit
+intended: a_flag_n
+edit: rtl/alu_fifo_top.sv
+  find: assign res_flags[alu_pkg::FLAG_N] = alu_y[W-1];
+  replace: assign res_flags[alu_pkg::FLAG_N] = alu_y[W-2];

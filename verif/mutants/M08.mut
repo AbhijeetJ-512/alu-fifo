@@ -1,0 +1,6 @@
+id: M08
+desc: SRL shifts arithmetically (sign-extends) instead of logically
+intended: scoreboard
+edit: rtl/alu.sv
+  find: y = a >> shamt;
+  replace: y = $signed(a) >>> shamt;

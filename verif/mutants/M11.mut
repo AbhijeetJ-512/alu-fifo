@@ -1,0 +1,6 @@
+id: M11
+desc: transfer ignores out_full (pushes a result into a full output FIFO)
+intended: a_lockstep
+edit: rtl/alu_fifo_top.sv
+  find: assign xfer     = !in_empty && !out_full;
+  replace: assign xfer     = !in_empty;

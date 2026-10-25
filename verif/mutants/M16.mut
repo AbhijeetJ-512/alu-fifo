@@ -1,0 +1,7 @@
+# Found by the final review: a_lockstep only says a transfer happens ONLY when possible, never that it happens WHENEVER possible.
+id: M16
+desc: no transfer while the sink is stalled unless the input FIFO is full (results held back although the output FIFO has room)
+intended: a_xfer_def
+edit: rtl/alu_fifo_top.sv
+  find: assign xfer     = !in_empty && !out_full;
+  replace: assign xfer     = !in_empty && !out_full && (out_ready || in_full);

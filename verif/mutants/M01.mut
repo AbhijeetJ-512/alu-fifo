@@ -1,0 +1,7 @@
+# FIFO full flag one entry early: the FIFO claims full at DEPTH-1 entries.
+id: M01
+desc: FIFO full asserts one entry early (occupancy >= DEPTH-1)
+intended: a_full_def
+edit: rtl/sync_fifo.sv
+  find: assign full  = (wr_ptr[AW-1:0] == rd_ptr[AW-1:0]) && (wr_ptr[AW] != rd_ptr[AW]);
+  replace: assign full  = ((wr_ptr - rd_ptr) >= (AW + 1)'(DEPTH - 1));

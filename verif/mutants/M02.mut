@@ -1,0 +1,11 @@
+# Pop while empty. Unreachable through the top as built (the top only pops a non-empty FIFO and the
+# FIFO ignores it anyway), so BOTH guards are removed: the FIFO's own, and the sink pop's out_valid gate.
+id: M02
+desc: pop allowed while empty (FIFO guard removed and the sink pops without out_valid)
+intended: a_empty_def
+edit: rtl/sync_fifo.sv
+  find: if (pop && !empty) begin
+  replace: if (pop) begin
+edit: rtl/alu_fifo_top.sv
+  find: assign out_pop   = out_valid && out_ready;
+  replace: assign out_pop   = out_ready;

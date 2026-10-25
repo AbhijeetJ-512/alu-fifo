@@ -1,0 +1,6 @@
+id: M13
+desc: FIFO head read from the write slot, so the output changes while stalled
+intended: a_out_hold, a_head_stable
+edit: rtl/sync_fifo.sv
+  find: assign dout  = mem[rd_ptr[AW-1:0]];
+  replace: assign dout  = mem[wr_ptr[AW-1:0]];

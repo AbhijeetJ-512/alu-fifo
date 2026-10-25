@@ -1,0 +1,6 @@
+id: M06
+desc: SUB carry-out inverted (C reports borrow instead of no-borrow)
+intended: scoreboard
+edit: rtl/alu.sv
+  find: c = diff[W];
+  replace: c = ~diff[W];

@@ -1,0 +1,8 @@
+# The result is dropped when the output FIFO holds DEPTH-1 entries, but the input is still popped.
+# The mutation keeps its own occupancy count (5 bits is enough for DEPTH up to 31).
+id: M14
+desc: result push suppressed when the output FIFO holds DEPTH-1 entries while the input still pops
+intended: a_conservation, a_lockstep
+edit: rtl/alu_fifo_top.sv
+  find: assign out_push = xfer;
+  replace: logic [4:0] mcnt;\n  always_ff @(posedge clk) begin\n    if (!rst_n) mcnt <= '0;\n    else        mcnt <= mcnt + 5'(out_push) - 5'(out_pop);\n  end\n  assign out_push = xfer && (mcnt != 5'(DEPTH - 1));

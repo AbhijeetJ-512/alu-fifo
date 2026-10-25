@@ -1,0 +1,6 @@
+id: M19
+desc: Z flag derived from bit 0 of the result instead of the whole word
+intended: a_flag_z
+edit: rtl/alu_fifo_top.sv
+  find: assign res_flags[alu_pkg::FLAG_Z] = (alu_y == '0);
+  replace: assign res_flags[alu_pkg::FLAG_Z] = (alu_y[0] == 1'b0);

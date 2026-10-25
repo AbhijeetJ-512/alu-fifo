@@ -1,0 +1,6 @@
+id: M09
+desc: SLTU compares as signed
+intended: scoreboard
+edit: rtl/alu.sv
+  find: (a < b)};
+  replace: ($signed(a) < $signed(b))};
