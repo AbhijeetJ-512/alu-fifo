@@ -192,3 +192,7 @@ docs/           spec, acceptance checklist, results/ (report snapshots)
 build/ pnr_results/   generated
 ```
 
+## License
+
+MIT, see [`LICENSE`](LICENSE). The Sky130 platform files in `sky130hd/` aren't mine and keep their own licenses (BSD 3-Clause from
+OpenROAD, Apache 2.0 for the SkyWater cell data); [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) has the details.
