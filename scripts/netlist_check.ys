@@ -1,0 +1,20 @@
+# netlist_check.ys - re-reads the netlist synth.ys wrote and checks the artifact itself (template).
+# These checks cannot be triggered from RTL (synthesis would have to produce the fault), so
+# scripts/synth_selftest.sh runs them on hand-made netlists. Same three-line shape as synth.ys.
+
+read_liberty -lib @FULL_LIB@
+read_verilog -sv @NETLIST@
+hierarchy -check -top @TOP@
+
+log CHECK check-assert
+check -assert
+log PASS check-assert
+
+# Anything left that is not a library cell shows up as an internal $-cell.
+log CHECK all-mapped
+select -assert-none t:$*
+log PASS all-mapped
+
+log CHECK no-lpflow
+select -assert-none t:sky130_fd_sc_hd__lpflow_*
+log PASS no-lpflow

@@ -1,0 +1,39 @@
+# synth.ys - Yosys synthesis of alu_fifo_top to Sky130 HD. A template: the Makefile fills in the @tokens@
+# (sources, top, synthesis-only liberty, clock period in ps, output dir). Native Yosys commands only.
+#
+# Each check is three lines: `log CHECK <name>`, exactly ONE command, `log PASS <name>`. scripts/synth_selftest.sh
+# deletes and neutralises each one in a copy to prove it can fail, so keep that shape. A failure is blamed on
+# the check whose CHECK banner has no PASS after it, so a failure further on cannot be mistaken for the check.
+# Stage order follows Full-Adder/scripts/synth.ys (read, map, report, write); the middle is new because
+# that script ran techmap before dfflibmap and could not handle flip-flops with an enable.
+
+read_verilog -sv @SOURCES@
+read_liberty -lib @LIB@
+hierarchy -check -top @TOP@
+proc
+tribuf
+
+# Before synth: synth would turn an undriven net into a constant and optimise a tri-state away.
+log CHECK no-tribuf
+select -assert-none t:$tribuf t:$_TBUF_
+log PASS no-tribuf
+
+log CHECK check-rtl
+check -assert
+log PASS check-rtl
+
+synth -top @TOP@ -flatten
+
+log CHECK no-latch
+select -assert-none t:$*latch* t:$_DLATCH*
+log PASS no-latch
+
+# Plain D flip-flops only (enable and synchronous reset become logic), then the liberty mapping.
+dfflegalize -cell $_DFF_P_ x
+dfflibmap -liberty @LIB@
+abc -D @PERIOD_PS@ -liberty @LIB@
+hilomap -hicell sky130_fd_sc_hd__conb_1 HI -locell sky130_fd_sc_hd__conb_1 LO
+opt_clean -purge
+
+tee -o @OUTDIR@/reports/stat.txt stat -liberty @LIB@
+write_verilog -noattr @OUTDIR@/synth.v

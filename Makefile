@@ -66,6 +66,9 @@ help:
 	@echo "  make sim-depths     - DEPTH=2, 4 and 16 build and pass"
 	@echo "  make cov            - coverage run: every named cover bin hit, rtl/ lines covered (reports in $(REPORT_DIR)/)"
 	@echo "  make cov-selftest   - cov_check.py must fail on a zero-hit bin, an uncovered line, a stale exclusion"
+	@echo "  make synth          - Yosys synthesis to Sky130 HD -> $(BUILD_DIR)/synth.v, $(REPORT_DIR)/stat.txt"
+	@echo "  make synth-selftest - each synthesis check must stop the bad input it is bound to"
+	@echo "  make synth-selftest-deep - delete / neutralise each check in turn; the selftest must notice"
 	@echo "  make check          - lint, rules, sim, seeds, depths, cov, mutants and their self-tests"
 	@echo "  make mutants        - inject each verif/mutants/*.mut bug; every one must be caught by its intended check"
 	@echo "  make wave           - open the VCD in GTKWave"
@@ -186,6 +189,53 @@ mutants: mutants-selftest
 .PHONY: check
 check: lint rules rules-selftest sim sim-seeds sim-depths cov cov-selftest mutants
 	@echo "[CHECK] all gates passed"
+
+# --------------- Synthesis (Yosys) ---------------
+# scripts/synth.ys runs the RTL-level checks and maps to Sky130 HD; scripts/netlist_check.ys then reads the
+# written netlist back and checks the artifact itself. Both are templates: the Makefile fills in the
+# sources, the clock period (single source: CLK_PERIOD_NS) and the library paths.
+PERIOD_PS   := $(shell awk 'BEGIN{printf "%d", $(CLK_PERIOD_NS)*1000}')
+FULL_LIB    := sky130hd/sky130hd_tt.lib
+SYNTH_LIB   := $(BUILD_DIR)/sky130hd_synth.lib
+NETLIST     := $(BUILD_DIR)/synth.v
+STAT_RPT    := $(REPORT_DIR)/stat.txt
+TOP         := alu_fifo_top
+
+$(SYNTH_LIB): $(FULL_LIB) scripts/prune_lib.py
+	@mkdir -p $(BUILD_DIR)
+	@$(PYTHON) -I scripts/prune_lib.py $(FULL_LIB) $(SYNTH_LIB) --drop sky130_fd_sc_hd__lpflow_ --drop sky130_fd_sc_hd__probe
+
+.PHONY: synth
+synth: $(NETLIST)
+	@echo "[SYNTH] Netlist ready: $(NETLIST)"
+
+# CLK_PERIOD_NS is not a file, so a stamp records it: the netlist (and later the layout) rebuild when it changes.
+PERIOD_STAMP := $(BUILD_DIR)/period.stamp
+.PHONY: FORCE
+FORCE:
+$(PERIOD_STAMP): FORCE
+	@mkdir -p $(BUILD_DIR)
+	@echo "$(CLK_PERIOD_NS)" | cmp -s - $@ || echo "$(CLK_PERIOD_NS)" > $@
+
+$(NETLIST): $(RTL) scripts/synth.ys scripts/netlist_check.ys $(SYNTH_LIB) $(PERIOD_STAMP) Makefile
+	@echo "[SYNTH] Running Yosys (CLK_PERIOD_NS=$(CLK_PERIOD_NS))..."
+	@mkdir -p $(REPORT_DIR)
+	@rm -f $(STAT_RPT) $(NETLIST)
+	@sed -e "s|@SOURCES@|$(RTL)|g" -e "s|@TOP@|$(TOP)|g" -e "s|@LIB@|$(SYNTH_LIB)|g" \
+	     -e "s|@PERIOD_PS@|$(PERIOD_PS)|g" -e "s|@OUTDIR@|$(BUILD_DIR)|g" scripts/synth.ys > $(BUILD_DIR)/synth_run.ys
+	@$(YOSYS) -q -l $(BUILD_DIR)/synth.log -s $(BUILD_DIR)/synth_run.ys >/dev/null 2>&1 || { grep -E '^CHECK|ERROR' $(BUILD_DIR)/synth.log | tail -n 5; exit 1; }
+	@echo "[SYNTH] Checking the written netlist..."
+	@sed -e "s|@NETLIST@|$(NETLIST)|g" -e "s|@TOP@|$(TOP)|g" -e "s|@FULL_LIB@|$(FULL_LIB)|g" \
+	     scripts/netlist_check.ys > $(BUILD_DIR)/netlist_check_run.ys
+	@$(YOSYS) -q -l $(BUILD_DIR)/netlist_check.log -s $(BUILD_DIR)/netlist_check_run.ys >/dev/null 2>&1 || { grep -E '^CHECK|ERROR' $(BUILD_DIR)/netlist_check.log | tail -n 5; exit 1; }
+
+.PHONY: synth-selftest
+synth-selftest: $(SYNTH_LIB)
+	@scripts/synth_selftest.sh
+
+.PHONY: synth-selftest-deep
+synth-selftest-deep: $(SYNTH_LIB)
+	@scripts/synth_selftest.sh --deep
 
 # --------------- Cleaning ---------------
 
