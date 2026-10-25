@@ -1,0 +1,6 @@
+
+mutants: 22, killed 22, intended check fired in 22
+only guard for their bug (survive with the intended check removed): M15, M17
+assertions defined in verif/*_checker.sv : 15
+assertions with no mutant bound to them  : none
+assertions that fired in no mutant run   : none
