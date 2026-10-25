@@ -70,6 +70,9 @@ help:
 	@echo "  make synth-selftest - each synthesis check must stop the bad input it is bound to"
 	@echo "  make synth-selftest-deep - delete / neutralise each check in turn; the selftest must notice"
 	@echo "  make sta            - OpenSTA on the netlist with the SDC; the SDC readback is checked -> timing.txt, power_report.txt"
+	@echo "  make pnr            - OpenROAD floorplan, place, CTS, repair, route, extract -> $(RESULTS_DIR)/ (PNR_STOP_AFTER=repair to stop early)"
+	@echo "  make pnr-selftest   - pnr_check.sh must reject a run that stopped early, a stale or mismatched results directory"
+	@echo "  make pnr-check      - read the OpenROAD run back and fail on anything wrong (PNR_CHECK_MODE=partial|full)"
 	@echo "  make sta-selftest   - check_sdc.py must reject a wrong period, delay, driving cell or load in the SDC readback"
 	@echo "  make check          - lint, rules, sim, seeds, depths, cov, mutants and their self-tests"
 	@echo "  make mutants        - inject each verif/mutants/*.mut bug; every one must be caught by its intended check"
@@ -255,6 +258,30 @@ sta: $(NETLIST) $(SDC) scripts/sta.tcl
 	    if grep -qiE '^Error|Error:' $(REPORT_DIR)/sta.log; then grep -iE 'Error' $(REPORT_DIR)/sta.log | head -n 5; exit 1; fi
 	@$(PYTHON) -I scripts/check_sdc.py $(REPORT_DIR)/sdc_readback.sdc $(CLK_PERIOD_NS) --netlist $(NETLIST)
 	@echo "[STA ] Reports: $(REPORT_DIR)/timing.txt $(REPORT_DIR)/power_report.txt"
+
+# --------------- Place and route (OpenROAD) ---------------
+# PNR_STOP_AFTER=floorplan|place|cts|repair stops the flow early (environment variable, not a make variable).
+
+.PHONY: pnr
+pnr: $(NETLIST) $(SDC) scripts/pnr_flow.tcl config/floorplan.tcl config/platform.tcl
+	@echo "[PNR ] Running OpenROAD flow (CLK_PERIOD_NS=$(CLK_PERIOD_NS), CORE_UTILIZATION=$(CORE_UTILIZATION))..."
+	@rm -rf $(RESULTS_DIR)  # never let a run that stops early leave the previous run's reports looking current
+	@mkdir -p $(RESULTS_DIR)
+	@$(OPENROAD) -exit scripts/pnr_flow.tcl > $(RESULTS_DIR)/pnr.log 2>&1 || { tail -n 25 $(RESULTS_DIR)/pnr.log; exit 1; }
+	@echo "[PNR ] Results directory: $(RESULTS_DIR)"
+
+.PHONY: pnr-gui
+pnr-gui: $(NETLIST)
+	@echo "[OPENROAD][GUI] Running PnR in GUI..."
+	@$(OPENROAD) -gui scripts/pnr_flow.tcl
+
+.PHONY: pnr-check
+pnr-check:
+	@scripts/pnr_check.sh $(or $(PNR_CHECK_MODE),full)
+
+.PHONY: pnr-selftest
+pnr-selftest:
+	@scripts/pnr_check_selftest.sh
 
 # --------------- Cleaning ---------------
 
