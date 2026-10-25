@@ -69,6 +69,8 @@ help:
 	@echo "  make synth          - Yosys synthesis to Sky130 HD -> $(BUILD_DIR)/synth.v, $(REPORT_DIR)/stat.txt"
 	@echo "  make synth-selftest - each synthesis check must stop the bad input it is bound to"
 	@echo "  make synth-selftest-deep - delete / neutralise each check in turn; the selftest must notice"
+	@echo "  make sta            - OpenSTA on the netlist with the SDC; the SDC readback is checked -> timing.txt, power_report.txt"
+	@echo "  make sta-selftest   - check_sdc.py must reject a wrong period, delay, driving cell or load in the SDC readback"
 	@echo "  make check          - lint, rules, sim, seeds, depths, cov, mutants and their self-tests"
 	@echo "  make mutants        - inject each verif/mutants/*.mut bug; every one must be caught by its intended check"
 	@echo "  make wave           - open the VCD in GTKWave"
@@ -236,6 +238,23 @@ synth-selftest: $(SYNTH_LIB)
 .PHONY: synth-selftest-deep
 synth-selftest-deep: $(SYNTH_LIB)
 	@scripts/synth_selftest.sh --deep
+
+.PHONY: sta-selftest
+sta-selftest:
+	@scripts/sdc_selftest.sh
+
+# --------------- Static timing (OpenSTA) ---------------
+SDC := constraints/alu_fifo.sdc
+
+.PHONY: sta
+sta: $(NETLIST) $(SDC) scripts/sta.tcl
+	@echo "[STA ] Running OpenSTA..."
+	@mkdir -p $(REPORT_DIR)
+	@rm -f $(REPORT_DIR)/timing.txt $(REPORT_DIR)/power_report.txt $(REPORT_DIR)/sdc_readback.sdc
+	@SDC_FILE=$(SDC) $(OPENSTA) -no_splash -exit scripts/sta.tcl > $(REPORT_DIR)/sta.log 2>&1; \
+	    if grep -qiE '^Error|Error:' $(REPORT_DIR)/sta.log; then grep -iE 'Error' $(REPORT_DIR)/sta.log | head -n 5; exit 1; fi
+	@$(PYTHON) -I scripts/check_sdc.py $(REPORT_DIR)/sdc_readback.sdc $(CLK_PERIOD_NS) --netlist $(NETLIST)
+	@echo "[STA ] Reports: $(REPORT_DIR)/timing.txt $(REPORT_DIR)/power_report.txt"
 
 # --------------- Cleaning ---------------
 
