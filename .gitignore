@@ -1,0 +1,7 @@
+# Simulator builds, mutation runs, synthesis and timing output. pnr_results/ is tracked (the routed run's reports and netlist) except
+# the OpenROAD databases, which a run writes there and which are not kept.
+build/
+pnr_results/*.db
+__pycache__/
+*.pyc
+*.vcd
