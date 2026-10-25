@@ -64,6 +64,8 @@ help:
 	@echo "  make sim            - build and run the testbench (SEED=, NCMD=, DEPTH=); VCD in $(SIM_BUILD)/waveform.vcd"
 	@echo "  make sim-seeds      - seeds 0 and 0x9E3779B9 give varied stimulus; SEED=1 reproduces exactly"
 	@echo "  make sim-depths     - DEPTH=2, 4 and 16 build and pass"
+	@echo "  make cov            - coverage run: every named cover bin hit, rtl/ lines covered (reports in $(REPORT_DIR)/)"
+	@echo "  make cov-selftest   - cov_check.py must fail on a zero-hit bin, an uncovered line, a stale exclusion"
 	@echo "  make check          - lint, rules, sim, seeds, depths, cov, mutants and their self-tests"
 	@echo "  make wave           - open the VCD in GTKWave"
 	@echo "  make clean          - remove build/"
@@ -128,10 +130,44 @@ sim-depths:
 	    echo "[DEPTHS] DEPTH=$$d: $$(echo "$$out" | grep '^TB PASS')"; \
 	done
 
+# --------------- Coverage ---------------
+# Same testbench, built with --coverage (line, toggle and the named cover property bins).
+# scripts/cov_check.py fails the target on any zero-hit bin or any uncovered rtl/ line that is
+# not listed, with a reason, in verif/cov_exclusions.txt.
+
+COV_BUILD := $(BUILD_DIR)/cov_d$(DEPTH)
+COV_EXE   := $(COV_BUILD)/Vtb_alu_fifo
+COV_DAT   := $(COV_BUILD)/coverage.dat
+COV_CHECK  = $(PYTHON) -I scripts/cov_check.py $(1) --rtl-dir rtl --exclusions verif/cov_exclusions.txt \
+                 --bins-out $(REPORT_DIR)/coverage_bins.txt --summary-out $(REPORT_DIR)/coverage_summary.txt \
+                 --toggle-out $(REPORT_DIR)/coverage_toggle_unhit.txt
+
+$(COV_EXE): $(RTL) $(VERIF) $(MAIN_CPP)
+	@echo "[COV ] Building coverage testbench (DEPTH=$(DEPTH))..."
+	@mkdir -p $(COV_BUILD)
+	@$(VERILATOR) $(VFLAGS) --coverage --Mdir $(COV_BUILD) $(RTL) $(VERIF) $(MAIN_CPP) \
+	    > $(COV_BUILD)/verilator.log 2>&1 || { tail -n 40 $(COV_BUILD)/verilator.log; exit 1; }
+
+.PHONY: cov
+cov: $(COV_EXE)
+	@mkdir -p $(REPORT_DIR)
+	@echo "[COV ] Running (SEED=$(SEED) DEPTH=$(DEPTH))..."
+	@$(COV_EXE) $(SIM_ARGS) +cov_file=$(COV_DAT) > $(COV_BUILD)/run.log 2>&1; rc=$$?; \
+	    if [ $$rc -ne 0 ] || ! grep -q '^TB PASS' $(COV_BUILD)/run.log; then \
+	        tail -n 20 $(COV_BUILD)/run.log; echo "[COV ] testbench FAILED (exit $$rc)"; exit 1; fi
+	@$(call COV_CHECK,$(COV_DAT))
+	@rm -rf $(REPORT_DIR)/cov_annotated
+	@verilator_coverage --annotate $(REPORT_DIR)/cov_annotated $(COV_DAT) > /dev/null
+	@echo "[COV ] reports: $(REPORT_DIR)/coverage_bins.txt coverage_summary.txt coverage_toggle_unhit.txt cov_annotated/"
+
+.PHONY: cov-selftest
+cov-selftest:
+	@scripts/cov_selftest.sh
+
 # Everything that can fail, in one command: the RTL gates, the simulations, the coverage gate and the
 # mutation run, plus the self-tests that prove those gates can fail. Exits non-zero on the first failure.
 .PHONY: check
-check: lint rules rules-selftest sim sim-seeds sim-depths
+check: lint rules rules-selftest sim sim-seeds sim-depths cov cov-selftest
 	@echo "[CHECK] all gates passed"
 
 # --------------- Cleaning ---------------

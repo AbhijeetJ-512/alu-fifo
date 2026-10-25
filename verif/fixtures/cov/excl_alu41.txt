@@ -1,0 +1,2 @@
+# fixture: excludes the one line one_line_miss.dat leaves unhit
+rtl/alu.sv:41 fixture reason
