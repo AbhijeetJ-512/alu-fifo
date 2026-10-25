@@ -61,7 +61,11 @@ help:
 	@echo "  make lint           - Verilator -Wall lint of rtl/ (zero warnings required)"
 	@echo "  make rules          - RTL style gate (always_comb / always_ff @(posedge clk) only, no initial, SVA, tri-state)"
 	@echo "  make rules-selftest - each bad fixture must be stopped by the one rule it is bound to"
+	@echo "  make sim            - build and run the testbench (SEED=, NCMD=, DEPTH=); VCD in $(SIM_BUILD)/waveform.vcd"
+	@echo "  make sim-seeds      - seeds 0 and 0x9E3779B9 give varied stimulus; SEED=1 reproduces exactly"
+	@echo "  make sim-depths     - DEPTH=2, 4 and 16 build and pass"
 	@echo "  make check          - lint, rules, sim, seeds, depths, cov, mutants and their self-tests"
+	@echo "  make wave           - open the VCD in GTKWave"
 	@echo "  make clean          - remove build/"
 	@echo "  make distclean      - remove build/ and $(RESULTS_DIR)/"
 	@echo "Override: make SEED=7 DEPTH=4 CLK_PERIOD_NS=10.0"
@@ -81,10 +85,53 @@ rules:
 rules-selftest:
 	@scripts/rules_selftest.sh
 
+# --------------- Simulation ---------------
+
+$(SIM_EXE): $(RTL) $(VERIF) $(MAIN_CPP)
+	@echo "[SIM ] Building testbench (DEPTH=$(DEPTH))..."
+	@mkdir -p $(SIM_BUILD)
+	@$(VERILATOR) $(VFLAGS) --trace --Mdir $(SIM_BUILD) $(RTL) $(VERIF) $(MAIN_CPP) \
+	    > $(SIM_BUILD)/verilator.log 2>&1 || { tail -n 40 $(SIM_BUILD)/verilator.log; exit 1; }
+
+.PHONY: sim
+sim: $(SIM_EXE)
+	@echo "[SIM ] Running (SEED=$(SEED) DEPTH=$(DEPTH))..."
+	@$(SIM_EXE) $(SIM_ARGS) +vcd=$(SIM_BUILD)/waveform.vcd > $(SIM_BUILD)/run.log 2>&1; rc=$$?; \
+	    cat $(SIM_BUILD)/run.log; \
+	    if [ $$rc -ne 0 ] || ! grep -q '^TB PASS' $(SIM_BUILD)/run.log; then \
+	        echo "[SIM ] FAILED (exit $$rc)"; exit 1; fi
+
+.PHONY: wave
+wave:
+	@$(GTKWAVE) $(SIM_BUILD)/waveform.vcd >/dev/null 2>&1 &
+
+# Review Focus 4: odd seeds give varied stimulus, and one seed reproduces its run exactly.
+.PHONY: sim-seeds
+sim-seeds: $(SIM_EXE)
+	@set -e; for s in $(SEED_LIST); do \
+	    out=$$($(MAKE) --no-print-directory sim SEED=$$s 2>&1) || { echo "$$out"; echo "[SEEDS] seed $$s FAILED"; exit 1; }; \
+	    d=$$(echo "$$out" | sed -n 's/^TB STATS distinct_cmds=\([0-9][0-9]*\).*/\1/p'); \
+	    if [ -z "$$d" ] || [ "$$d" -lt $(MIN_DISTINCT) ]; then echo "$$out"; \
+	        echo "[SEEDS] seed $$s: distinct_cmds='$$d' (< $(MIN_DISTINCT)): degenerate stimulus"; exit 1; fi; \
+	    echo "[SEEDS] seed $$s ok (distinct_cmds=$$d)"; \
+	done; \
+	a=$$($(MAKE) --no-print-directory sim SEED=1 2>&1 | grep -E '^TB (PASS|STATS)'); \
+	b=$$($(MAKE) --no-print-directory sim SEED=1 2>&1 | grep -E '^TB (PASS|STATS)'); \
+	if [ -z "$$a" ] || [ "$$a" != "$$b" ]; then echo "[SEEDS] SEED=1 is not reproducible:"; echo "$$a"; echo "$$b"; exit 1; fi; \
+	echo "[SEEDS] SEED=1 reproduces byte-identically"
+
+# Review Focus 5: the design is parameterised, so DEPTH other than 8 must build and pass.
+.PHONY: sim-depths
+sim-depths:
+	@set -e; for d in $(DEPTH_LIST); do \
+	    out=$$($(MAKE) --no-print-directory sim DEPTH=$$d 2>&1) || { echo "$$out"; echo "[DEPTHS] DEPTH=$$d FAILED"; exit 1; }; \
+	    echo "[DEPTHS] DEPTH=$$d: $$(echo "$$out" | grep '^TB PASS')"; \
+	done
+
 # Everything that can fail, in one command: the RTL gates, the simulations, the coverage gate and the
 # mutation run, plus the self-tests that prove those gates can fail. Exits non-zero on the first failure.
 .PHONY: check
-check: lint rules rules-selftest
+check: lint rules rules-selftest sim sim-seeds sim-depths
 	@echo "[CHECK] all gates passed"
 
 # --------------- Cleaning ---------------
