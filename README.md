@@ -13,6 +13,25 @@ the block ever differs from that snapshot. Anything that wasn't measured says `N
 it. The design parameters and assumptions in the text (16-bit, 8-entry, a 10 ns clock target, 20% I/O delays) are my choices rather than
 results.
 
+## Interactive architecture explorer
+
+[![Animated block diagram of alu_fifo_top: click to open the interactive explorer](docs/diagrams/architecture_explorer_preview.svg)](https://abhijeetj-512.github.io/alu-fifo/architecture_explorer.html)
+
+**[Open the interactive explorer](https://abhijeetj-512.github.io/alu-fifo/architecture_explorer.html)** (GitHub Pages). The animation above is a
+preview; the page itself pushes commands through a cycle-accurate JavaScript model of `alu_fifo_top`, one clock at a time. It shows which
+wires are active, the full and empty flags of both FIFOs applying back-pressure, the transfer rule, the ALU result and its flags, and a
+per-command timeline. It also walks step by step through six paths (a command from `in_valid` to `out_valid`, input and output
+back-pressure, streaming, the flags, verification) and has an inspector for each block with file and line references. The page is
+`docs/architecture_explorer.html` and also works opened straight from a clone; `docs/diagrams/make_explorer_preview.py` regenerates the
+preview from it.
+
+I checked the model against the RTL rather than trusting it: `python3 docs/explorer_validation/run_validation.py` runs the same
+stimulus through `rtl/` in Verilator (with the bound checkers on) for every scenario on the page plus a 150-command random one, at FIFO
+depths 2, 4 and 8, and writes `build/explorer_check.html`. That page runs the model embedded in the explorer and compares 17 values per
+cycle (handshakes, data, flags, both FIFOs' pointers, the transfer and the ALU result) with the RTL trace. All 18 runs (2,940 cycles)
+were identical. Not covered: reset (the page starts from the state just after reset), widths other than 16, and the page's drawing and
+timeline code, which only displays what the model computes.
+
 ## The design
 
 ```

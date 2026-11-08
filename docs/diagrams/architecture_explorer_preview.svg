@@ -1,0 +1,196 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 730" width="1500" height="730" role="img" aria-label="Block diagram of alu_fifo_top: source, input FIFO, transfer rule, ALU and flag logic, output FIFO, sink, scoreboard and bound checkers">
+<style>
+svg{--bg:#E9EDF1;--surface:#FFFFFF;--surface2:#F3F6F8;--ink:#121B24;--muted:#556574;--line:#C3CDD7;--grid:#D3DBE3;
+ --data:#1B5FC4;--fwd:#B86200;--ctl:#6E3FC4;--trap:#C42F38;--mem:#0F7F55;--ver:#6A7B8C;
+ --b0:#1B5FC4;--b1:#6E3FC4;--b2:#B86200;--b3:#0F7F55;--b4:#A0306F;--b5:#0E7C8C}
+@media (prefers-color-scheme: dark){svg{--bg:#0C1219;--surface:#131B24;--surface2:#18222D;--ink:#E1E8EF;--muted:#8D9BA9;--line:#2B3947;--grid:#1B2631;
+ --data:#5FA3FF;--fwd:#F0A63A;--ctl:#A986F5;--trap:#FF6B70;--mem:#3CCB8E;--ver:#8496A8;
+ --b0:#5FA3FF;--b1:#A986F5;--b2:#F0A63A;--b3:#3CCB8E;--b4:#F07AB8;--b5:#3CC6D6}}
+.bg{fill:var(--bg)} .dot{fill:var(--grid)} .band{fill:var(--surface2);opacity:.6}
+.hd{font:700 16px 'Arial Narrow','Roboto Condensed','Helvetica Neue',Arial,sans-serif;letter-spacing:.04em}
+.box{fill:var(--surface);stroke:var(--line);stroke-width:1.2} .ext .box{fill:var(--surface2);stroke-dasharray:4 3} .ver .box{stroke-dasharray:2 3}
+.nt{font:700 15px 'Arial Narrow','Roboto Condensed','Helvetica Neue',Arial,sans-serif;fill:var(--ink)}
+.ns{font:400 10.5px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:var(--muted)}
+.nl{font:400 10.5px -apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:var(--muted)}
+.bar{fill:var(--surface2);stroke:var(--ink);stroke-opacity:.45;stroke-width:1.2}
+.bt{font:600 11px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:var(--muted);letter-spacing:.08em}
+.bnd{fill:none;stroke:var(--line);stroke-dasharray:6 5;stroke-width:1.2}
+.cap{font:600 11px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:var(--muted);letter-spacing:.06em}
+.lg{font:400 12px -apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:var(--muted)}
+.ln{fill:none;stroke-width:1.6}
+.t-data{stroke:var(--data)} .t-fwd{stroke:var(--fwd);stroke-width:2} .t-ctl{stroke:var(--ctl);stroke-dasharray:5 4}
+.t-trap{stroke:var(--trap);stroke-dasharray:7 3} .t-mem{stroke:var(--mem);stroke-width:2} .t-ver{stroke:var(--ver);stroke-dasharray:2 4}
+.p-data{fill:var(--data)} .p-fwd{fill:var(--fwd)} .p-ctl{fill:var(--ctl)} .p-trap{fill:var(--trap)} .p-mem{fill:var(--mem)} .p-ver{fill:var(--ver)}
+.pulse{fill:var(--data);animation:clk 1.7s steps(1,end) infinite}
+@keyframes clk{0%{opacity:0}88%{opacity:.55}100%{opacity:0}}
+@media (prefers-reduced-motion: reduce){.pulse{animation:none;opacity:0}}
+</style>
+<defs><pattern id="g" width="16" height="16" patternUnits="userSpaceOnUse"><circle class="dot" cx="1" cy="1" r=".9"/></pattern>
+<marker id="a-data" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="p-data"/></marker>
+<marker id="a-ctl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="p-ctl"/></marker>
+<marker id="a-ver" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="p-ver"/></marker>
+</defs>
+<rect class="bg" width="1500" height="730"/><rect width="1500" height="690" fill="url(#g)"/>
+<rect class="band" x="10" y="12" width="220" height="510" rx="4"/>
+<rect x="10" y="12" width="220" height="4" rx="2" fill="var(--b0)"/>
+<text class="hd" x="20" y="40" fill="var(--b0)">Source (testbench)</text>
+<rect class="band" x="240" y="12" width="330" height="510" rx="4"/>
+<rect x="240" y="12" width="330" height="4" rx="2" fill="var(--b1)"/>
+<text class="hd" x="250" y="40" fill="var(--b1)">Input FIFO</text>
+<rect class="band" x="580" y="12" width="290" height="510" rx="4"/>
+<rect x="580" y="12" width="290" height="4" rx="2" fill="var(--b2)"/>
+<text class="hd" x="590" y="40" fill="var(--b2)">Transfer + ALU</text>
+<rect class="band" x="880" y="12" width="330" height="510" rx="4"/>
+<rect x="880" y="12" width="330" height="4" rx="2" fill="var(--b3)"/>
+<text class="hd" x="890" y="40" fill="var(--b3)">Output FIFO</text>
+<rect class="band" x="1220" y="12" width="270" height="510" rx="4"/>
+<rect x="1220" y="12" width="270" height="4" rx="2" fill="var(--b4)"/>
+<text class="hd" x="1230" y="40" fill="var(--b4)">Sink (testbench)</text>
+<rect class="bnd" x="236" y="72" width="980" height="448" rx="6"/>
+<text class="cap" x="1210" y="514" text-anchor="end">alu_fifo_top</text>
+<text class="cap" x="1488" y="686" text-anchor="end">testbench + verification (outside the design)</text>
+<path class="ln t-ctl" d="M220 120 L260 120" marker-end="url(#a-ctl)"><title>in_valid</title></path>
+<path class="ln t-ctl" d="M260 150 L220 150" marker-end="url(#a-ctl)"><title>in_ready = !in_full</title></path>
+<path class="ln t-data" d="M125 210 L125 400 L260 400" marker-end="url(#a-data)"><title>in_op, in_a, in_b → in_fifo_din</title></path>
+<path class="ln t-ctl" d="M330 170 L330 200" marker-end="url(#a-ctl)"><title>in_push</title></path>
+<path class="ln t-ctl" d="M550 130 L558 130 L558 440 L550 440" marker-end="url(#a-ctl)"><title>in_push: write mem[wr_ptr]</title></path>
+<path class="ln t-ctl" d="M470 200 L470 170" marker-end="url(#a-ctl)"><title>in_full</title></path>
+<path class="ln t-ctl" d="M405 310 L405 340" marker-end="url(#a-ctl)"><title>wr_ptr[2:0], rd_ptr[2:0]</title></path>
+<path class="ln t-ctl" d="M550 225 L575 225 L575 140 L600 140" marker-end="url(#a-ctl)"><title>in_empty</title></path>
+<path class="ln t-ctl" d="M600 165 L586 165 L586 255 L550 255" marker-end="url(#a-ctl)"><title>in_pop = xfer: rd_ptr + 1</title></path>
+<path class="ln t-data" d="M550 420 L592 420 L592 285 L600 285" marker-end="url(#a-data)"><title>cmd_op, cmd_a, cmd_b (dout)</title></path>
+<path class="ln t-data" d="M725 340 L725 370" marker-end="url(#a-data)"><title>alu_y, alu_c, alu_v</title></path>
+<path class="ln t-data" d="M850 300 L862 300 L862 355 L900 355" marker-end="url(#a-data)"><title>alu_y</title></path>
+<path class="ln t-data" d="M850 420 L900 420" marker-end="url(#a-data)"><title>res_flags {N, Z, C, V}</title></path>
+<path class="ln t-ctl" d="M900 215 L886 215 L886 120 L850 120" marker-end="url(#a-ctl)"><title>out_full</title></path>
+<path class="ln t-ctl" d="M850 150 L880 150 L880 262 L900 262" marker-end="url(#a-ctl)"><title>out_push = xfer: wr_ptr + 1</title></path>
+<path class="ln t-ctl" d="M850 172 L876 172 L876 385 L900 385" marker-end="url(#a-ctl)"><title>out_push: write mem[wr_ptr]</title></path>
+<path class="ln t-ctl" d="M1045 310 L1045 340" marker-end="url(#a-ctl)"><title>wr_ptr[2:0], rd_ptr[2:0]</title></path>
+<path class="ln t-ctl" d="M1000 200 L1000 170" marker-end="url(#a-ctl)"><title>out_empty</title></path>
+<path class="ln t-ctl" d="M1100 170 L1100 200" marker-end="url(#a-ctl)"><title>out_pop: rd_ptr + 1</title></path>
+<path class="ln t-ctl" d="M1190 120 L1240 120" marker-end="url(#a-ctl)"><title>out_valid = !out_empty</title></path>
+<path class="ln t-ctl" d="M1240 150 L1190 150" marker-end="url(#a-ctl)"><title>out_ready</title></path>
+<path class="ln t-data" d="M1190 430 L1215 430 L1215 190 L1240 190" marker-end="url(#a-data)"><title>out_y, out_flags (dout)</title></path>
+<path class="ln t-ver" d="M1355 210 L1355 260" marker-end="url(#a-ver)"><title>delivered {flags, y}</title></path>
+<path class="ln t-ver" d="M400 560 L400 460" marker-end="url(#a-ver)"><title>input FIFO and handshake rules</title></path>
+<path class="ln t-ver" d="M725 560 L725 460" marker-end="url(#a-ver)"><title>flag rules</title></path>
+<path class="ln t-ver" d="M1000 560 L1000 460" marker-end="url(#a-ver)"><title>output FIFO, hold and latency rules</title></path>
+<circle r="3.2" class="p-ctl"><animateMotion dur="1.20s" begin="-0.00s" repeatCount="indefinite" path="M220 120 L260 120"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="1.20s" begin="-0.00s" repeatCount="indefinite" path="M260 150 L220 150"/></circle>
+<circle r="3.2" class="p-data"><animateMotion dur="4.64s" begin="-0.00s" repeatCount="indefinite" path="M125 210 L125 400 L260 400"/></circle>
+<circle r="3.2" class="p-data"><animateMotion dur="4.64s" begin="-2.32s" repeatCount="indefinite" path="M125 210 L125 400 L260 400"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="1.20s" begin="-0.00s" repeatCount="indefinite" path="M330 170 L330 200"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="4.66s" begin="-0.00s" repeatCount="indefinite" path="M550 130 L558 130 L558 440 L550 440"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="4.66s" begin="-2.33s" repeatCount="indefinite" path="M550 130 L558 130 L558 440 L550 440"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="1.20s" begin="-0.00s" repeatCount="indefinite" path="M470 200 L470 170"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="1.20s" begin="-0.00s" repeatCount="indefinite" path="M405 310 L405 340"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="1.93s" begin="-0.00s" repeatCount="indefinite" path="M550 225 L575 225 L575 140 L600 140"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="2.00s" begin="-0.00s" repeatCount="indefinite" path="M600 165 L586 165 L586 255 L550 255"/></circle>
+<circle r="3.2" class="p-data"><animateMotion dur="2.64s" begin="-0.00s" repeatCount="indefinite" path="M550 420 L592 420 L592 285 L600 285"/></circle>
+<circle r="3.2" class="p-data"><animateMotion dur="1.20s" begin="-0.00s" repeatCount="indefinite" path="M725 340 L725 370"/></circle>
+<circle r="3.2" class="p-data"><animateMotion dur="1.50s" begin="-0.00s" repeatCount="indefinite" path="M850 300 L862 300 L862 355 L900 355"/></circle>
+<circle r="3.2" class="p-data"><animateMotion dur="1.20s" begin="-0.00s" repeatCount="indefinite" path="M850 420 L900 420"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="2.07s" begin="-0.00s" repeatCount="indefinite" path="M900 215 L886 215 L886 120 L850 120"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="2.31s" begin="-0.00s" repeatCount="indefinite" path="M850 150 L880 150 L880 262 L900 262"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="3.76s" begin="-0.00s" repeatCount="indefinite" path="M850 172 L876 172 L876 385 L900 385"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="3.76s" begin="-1.88s" repeatCount="indefinite" path="M850 172 L876 172 L876 385 L900 385"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="1.20s" begin="-0.00s" repeatCount="indefinite" path="M1045 310 L1045 340"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="1.20s" begin="-0.00s" repeatCount="indefinite" path="M1000 200 L1000 170"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="1.20s" begin="-0.00s" repeatCount="indefinite" path="M1100 170 L1100 200"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="1.20s" begin="-0.00s" repeatCount="indefinite" path="M1190 120 L1240 120"/></circle>
+<circle r="3.2" class="p-ctl"><animateMotion dur="1.20s" begin="-0.00s" repeatCount="indefinite" path="M1240 150 L1190 150"/></circle>
+<circle r="3.2" class="p-data"><animateMotion dur="4.14s" begin="-0.00s" repeatCount="indefinite" path="M1190 430 L1215 430 L1215 190 L1240 190"/></circle>
+<circle r="3.2" class="p-data"><animateMotion dur="4.14s" begin="-2.07s" repeatCount="indefinite" path="M1190 430 L1215 430 L1215 190 L1240 190"/></circle>
+<circle r="3.2" class="p-ver"><animateMotion dur="1.20s" begin="-0.00s" repeatCount="indefinite" path="M1355 210 L1355 260"/></circle>
+<circle r="3.2" class="p-ver"><animateMotion dur="1.43s" begin="-0.00s" repeatCount="indefinite" path="M400 560 L400 460"/></circle>
+<circle r="3.2" class="p-ver"><animateMotion dur="1.43s" begin="-0.00s" repeatCount="indefinite" path="M725 560 L725 460"/></circle>
+<circle r="3.2" class="p-ver"><animateMotion dur="1.43s" begin="-0.00s" repeatCount="indefinite" path="M1000 560 L1000 460"/></circle>
+<g class="n ext"><rect class="box" x="30" y="90" width="190" height="120" rx="5"/>
+<text class="nt" x="40" y="109">Source</text>
+<text class="ns" x="40" y="124">tb_alu_fifo · valid / ready</text>
+<text class="nl" x="40" y="138">in_valid, in_op, in_a, in_b</text>
+<text class="nl" x="40" y="152">holds a stalled command unchanged</text>
+</g>
+<g class="n"><rect class="box" x="260" y="90" width="290" height="80" rx="5"/>
+<text class="nt" x="270" y="109">Source-side handshake</text>
+<text class="ns" x="270" y="124">assign · in_ready, in_push</text>
+<text class="nl" x="270" y="138">in_ready = !in_full</text>
+<text class="nl" x="270" y="152">in_push = in_valid &amp;&amp; in_ready</text>
+</g>
+<g class="n"><rect class="box" x="260" y="200" width="290" height="110" rx="5"/>
+<text class="nt" x="270" y="219">Pointers and flags</text>
+<text class="ns" x="270" y="234">u_in_fifo · wr_ptr, rd_ptr</text>
+<text class="nl" x="270" y="248">4-bit pointers (3 + wrap bit)</text>
+<text class="nl" x="270" y="262">empty = wr_ptr == rd_ptr</text>
+<text class="nl" x="270" y="276">full = low bits equal, wrap bits differ</text>
+</g>
+<g class="n"><rect class="box" x="260" y="340" width="290" height="120" rx="5"/>
+<text class="nt" x="270" y="359">Input storage</text>
+<text class="ns" x="270" y="374">u_in_fifo · mem[DEPTH], 35 bits</text>
+<text class="nl" x="270" y="388">entry = {op, a, b}</text>
+<text class="nl" x="270" y="402">write at wr_ptr on push, read at rd_ptr</text>
+<text class="nl" x="270" y="416">dout valid whenever not empty</text>
+</g>
+<g class="n"><rect class="box" x="600" y="90" width="250" height="90" rx="5"/>
+<text class="nt" x="610" y="109">Transfer rule</text>
+<text class="ns" x="610" y="124">assign · xfer</text>
+<text class="nl" x="610" y="138">xfer = !in_empty &amp;&amp; !out_full</text>
+<text class="nl" x="610" y="152">in_pop = out_push = xfer</text>
+</g>
+<g class="n"><rect class="box" x="600" y="210" width="250" height="130" rx="5"/>
+<text class="nt" x="610" y="229">ALU</text>
+<text class="ns" x="610" y="244">alu · combinational</text>
+<text class="nl" x="610" y="258">ADD SUB AND OR XOR SLL SRL SLTU</text>
+<text class="nl" x="610" y="272">sum, diff are 17-bit (carry bit)</text>
+<text class="nl" x="610" y="286">shift amount = b[3:0]</text>
+</g>
+<g class="n"><rect class="box" x="600" y="370" width="250" height="90" rx="5"/>
+<text class="nt" x="610" y="389">Flag logic</text>
+<text class="ns" x="610" y="404">assign · res_flags {N, Z, C, V}</text>
+<text class="nl" x="610" y="418">N = y[15]   Z = (y == 0)</text>
+<text class="nl" x="610" y="432">C = alu_c   V = alu_v</text>
+</g>
+<g class="n"><rect class="box" x="900" y="200" width="290" height="110" rx="5"/>
+<text class="nt" x="910" y="219">Pointers and flags</text>
+<text class="ns" x="910" y="234">u_out_fifo · wr_ptr, rd_ptr</text>
+<text class="nl" x="910" y="248">same logic as the input FIFO</text>
+<text class="nl" x="910" y="262">empty = wr_ptr == rd_ptr</text>
+<text class="nl" x="910" y="276">full = low bits equal, wrap bits differ</text>
+</g>
+<g class="n"><rect class="box" x="900" y="340" width="290" height="120" rx="5"/>
+<text class="nt" x="910" y="359">Output storage</text>
+<text class="ns" x="910" y="374">u_out_fifo · mem[DEPTH], 20 bits</text>
+<text class="nl" x="910" y="388">entry = {N, Z, C, V, y}</text>
+<text class="nl" x="910" y="402">dout valid whenever not empty</text>
+</g>
+<g class="n"><rect class="box" x="900" y="90" width="290" height="80" rx="5"/>
+<text class="nt" x="910" y="109">Sink-side handshake</text>
+<text class="ns" x="910" y="124">assign · out_valid, out_pop</text>
+<text class="nl" x="910" y="138">out_valid = !out_empty</text>
+<text class="nl" x="910" y="152">out_pop = out_valid &amp;&amp; out_ready</text>
+</g>
+<g class="n ext"><rect class="box" x="1240" y="90" width="230" height="120" rx="5"/>
+<text class="nt" x="1250" y="109">Sink</text>
+<text class="ns" x="1250" y="124">tb_alu_fifo · valid / ready</text>
+<text class="nl" x="1250" y="138">out_valid, out_y, out_flags</text>
+<text class="nl" x="1250" y="152">out_ready on some cycles</text>
+</g>
+<g class="n ext ver"><rect class="box" x="1240" y="260" width="230" height="110" rx="5"/>
+<text class="nt" x="1250" y="279">Scoreboard</text>
+<text class="ns" x="1250" y="294">tb_alu_fifo · ref_alu, exp_q</text>
+<text class="nl" x="1250" y="308">independent reference model</text>
+<text class="nl" x="1250" y="322">compares every delivered {flags, y}</text>
+</g>
+<g class="n ext ver"><rect class="box" x="260" y="560" width="940" height="80" rx="5"/>
+<text class="nt" x="270" y="579">alu_fifo_checker, sync_fifo_checker (bind)</text>
+<text class="ns" x="270" y="594">verif/*_checker.sv · 15 assertions · 34 cover bins</text>
+<text class="nl" x="270" y="608">handshake rules, flag consistency, latency, conservation; two FIFO instances each checked black-box</text>
+</g>
+<path class="ln t-data" d="M16 710 L42 710" marker-end="url(#a-data)"/>
+<text class="lg" x="50" y="714">Command / result data</text>
+<path class="ln t-ctl" d="M198 710 L224 710" marker-end="url(#a-ctl)"/>
+<text class="lg" x="232" y="714">Handshake &amp; control</text>
+<path class="ln t-ver" d="M367 710 L393 710" marker-end="url(#a-ver)"/>
+<text class="lg" x="401" y="714">Verification only</text>
+<text class="lg" x="1488" y="714" text-anchor="end">Open the interactive explorer to run scenarios through the design</text>
+</svg>
